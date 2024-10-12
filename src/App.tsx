@@ -1,9 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 function App() {
   const [inputText, setInputText] = useState('');
   const [lastSpaceTime, setLastSpaceTime] = useState(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    // Auto-focus the textarea when the component mounts
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value);
@@ -11,6 +19,10 @@ function App() {
 
   const handleDelete = useCallback(() => {
     setInputText('');
+    // Re-focus the textarea after clearing
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
   }, []);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -34,6 +46,7 @@ function App() {
         <X size={24} />
       </button>
       <textarea
+        ref={textareaRef}
         value={inputText}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
